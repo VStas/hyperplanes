@@ -1,0 +1,21 @@
+digraph G {
+    graph [center=1 rankdir=LR bgposlor="!#808080"]
+    node [width=0.3 height=0.3]
+    edge [dir=forward]
+
+    {% for i in range(dimentions[0]+1) %}
+    subgraph cluster_{{i}} {
+        {% for j in range(dimentions[1]+1) %}
+        "({{i}}, {{j}})"
+        {% endfor %}
+    }
+    {% endfor %}
+
+    {% for vertex in graph.get_vertices() %}
+        // outgoing edges for {{vertex}}
+        {% for point in graph.get_vertex(vertex).outcoming_arrows %}
+            "{{vertex}}" -> "{{point[0]}}"
+        {% endfor %}
+    {% endfor %}
+
+}

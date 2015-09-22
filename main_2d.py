@@ -3,7 +3,13 @@ __author__ = 'Stas'
 import numpy as np
 
 from graph import Graph
+from jinja2 import Environment, FileSystemLoader
+import os
 
+# Capture our current directory
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+j2_env = Environment(loader=FileSystemLoader(THIS_DIR),
+                        trim_blocks=True)
 
 # n1 = 2, n2 = 3
 #
@@ -83,26 +89,40 @@ def build_equation_for_vertex(i, j, n1, n2, graph):
 
     return equation
 
+def get_graph_dimentions(graph):
+    # get graph dimentions by finding the maximum indices 
+    # of nodes (assuming that the representing matrix is rectangular)
+    v = graph.get_vertices()
+    return (max([x[0] for x in v]), max(x[1] for x in v))
 
-def main_2d(n1, n2, lmbd, mu):
+def output_graph(graph, name="out.gv"):
+    graph_output = j2_env.get_template('template.gv').render(graph=graph, dimentions=get_graph_dimentions(graph))
+    with open("out.gv", "wb") as fh:
+        fh.write(graph_output)
+
+
+def main_2d(n1, n2, lmbd, mu, output_graphname="out.gv"):
 
     g = build_graph(n1, n2, lmbd, mu)
 
     matrix, stolbets = build_equations(n1, n2, g)
 
-    for row in matrix:
-        print row
+    # for row in matrix:
+    #     print row
 
-    print '-----'
-    print stolbets
-    print '-----'
+    # print '-----'
+    # print stolbets
+    # print '-----'
 
     matrix_numpy = np.array(matrix)
     stolbets_numpy = np.array(stolbets)
 
     result = np.linalg.solve(matrix_numpy, stolbets_numpy)
-    print result
+    print (result, g.get_vertices())
 
+    output_graph(g, output_graphname)
+    print "Graph was successfully printed to " + output_graphname
+    return g
 
     #
     # for i in range(0, n1+1):
@@ -111,4 +131,4 @@ def main_2d(n1, n2, lmbd, mu):
     #             print g.get_vertex((i,j)).outcoming_arrows
     #             print g.get_vertex((i,j)).incoming_arrows
 
-main_2d(n1=2, n2=3, lmbd=2, mu=1)
+g = main_2d(n1=2, n2=3, lmbd=2, mu=1)

@@ -1,4 +1,5 @@
 __author__ = 'Stas'
+import itertools
 
 class Vertex:
     def __init__(self, node):
@@ -7,10 +8,10 @@ class Vertex:
         self.outcoming_arrows = []
 
     def __str__(self):
-        return str(self.node)
+        return str(self.node) + ' -> ' + str(self.outcoming_arrows) + '\n\t' + ' <- ' + str(self.incoming_arrows)
 
     def __repr__(self):
-        return str(self.node)
+        return self.__str__()
 
 class Graph:
     def __init__(self):
