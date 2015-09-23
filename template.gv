@@ -14,7 +14,7 @@ digraph G {
     {% for vertex in graph.get_vertices() %}
         // outgoing edges for {{vertex}}
         {% for point in graph.get_vertex(vertex).outcoming_arrows %}
-            "{{vertex}}" -> "{{point[0]}}"
+            "{{vertex}}" -> "{{point[0]}}" [ label = "{{point[1]}} lambda" ]
         {% endfor %}
     {% endfor %}
 
